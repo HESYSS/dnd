@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Adventure {
+  id              Int       @id @default(autoincrement())
+  name            String
+  description     String
+  image           Bytes
+  monsters        Monster[] @relation("AdventureMonsters")
+  customMonsters  Json
+  battlefieldMaps Bytes[]
+  gmId            Int
+  gm              User      @relation("GMAdventures", fields: [gmId], references: [id])
+  players         User[]    @relation("PlayerAdventures")
+}
+
+model Monster {
+  id         Int    @id @default(autoincrement())
+  data       Json
+  adventure  Adventure @relation("AdventureMonsters", fields: [adventureId], references: [id])
+  adventureId Int
+}
+
+model User {
+  id                     Int             @id @default(autoincrement())
+  username               String          @unique
+  password               String
+  friends                Friendship[]    @relation("UserFriends")
+  friendOf               Friendship[]    @relation("FriendOf")
+  sentFriendRequests     FriendRequest[] @relation("SentRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
+  adventures             Adventure[]     @relation("PlayerAdventures")
+  gmAdventures           Adventure[]     @relation("GMAdventures")
+}
+
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  friendId  Int
+  user      User     @relation("UserFriends", fields: [userId], references: [id])
+  friend    User     @relation("FriendOf", fields: [friendId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
+}
+
+model FriendRequest {
+  id        Int      @id @default(autoincrement())
+  senderId  Int
+  receiverId Int
+  status    String   @default("pending") // "pending", "accepted", "declined"
+  sender    User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver  User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([senderId, receiverId])
+}
