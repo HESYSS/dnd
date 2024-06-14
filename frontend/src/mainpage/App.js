@@ -72,9 +72,9 @@ const App = () => {
             path="/login"
             element={!userIsRegistered ? (
               <div className="app-container">
-                <h1>Please log in or register to see the content.</h1>
-                <button className="login-button" onClick={() => openModal('loginModal')}>Log In</button>
-                <button className="register-button" onClick={() => openModal('registerModal')}>Register</button>
+                <h1>Пожалуйста, войдите или зарегистрируйтесь, чтобы увидеть контент.</h1>
+                <button className="login-button" onClick={() => openModal('loginModal')}>Авторизоваться</button>
+                <button className="register-button" onClick={() => openModal('registerModal')}>Зарегистрироваться</button>
                 <Modals userId={userId} userIsRegistered={userIsRegistered} handleLogin={handleLogin} />
               </div>
             ) : (
