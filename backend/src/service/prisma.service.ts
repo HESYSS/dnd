@@ -4,7 +4,7 @@ import { PrismaClient } from '../../my-prisma-project/node_modules/@prisma/clien
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    super(); // Вызываем конструктор родительского класса
+    super(); 
   }
 
   async onModuleInit() {
@@ -18,7 +18,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async getPlayersInAdventure(adventureId: number): Promise<number[]> {
     const adventure = await this.adventure.findUnique({
       where: { id: adventureId },
-      include: { players: { select: { id: true } } } // Получаем только идентификаторы игроков
+      include: { players: { select: { id: true } } } 
     });
     return adventure.players.map(player => player.id);
   }

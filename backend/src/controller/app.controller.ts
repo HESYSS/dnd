@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { UserService } from '../service/user.service';
 import { FriendRequestService } from '../service/friend-request.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { WebSocketMiddleware } from 'src/logger.middleware';
+import { WebSocketMiddleware } from 'src/middlewares/logger.middleware';
 import { AdventureService } from 'src/service/adventure.service';
 import { MonsterService } from 'src/service/monster.service';
 import { AppGateway } from './WebSocket.controller';
@@ -20,7 +20,7 @@ export class AppController {
   ) {this.appGateway = new AppGateway(this.webSocketMiddleware);}
 
 
-  @Post('entrance')
+  @Post('logins')
   async getUsers(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
   const users = await this.userService.getUsers();
   const user = users.find(
@@ -35,7 +35,7 @@ export class AppController {
   }
 }
 
-@Get('entrances/:id')
+@Get('login/:id')
 async entrancePage(@Param('id') id: number, @Res() res: Response) {
   const users = await this.userService.getUsers();
   const userIsRegistered = true;
@@ -77,7 +77,7 @@ async entrancePage(@Param('id') id: number, @Res() res: Response) {
     const adventure = await this.adventureService.findOne(adventureID);
     if (!adventure) {
       console.log('Adventure not found');
-      return null; // или что-то еще, что будет обозначать отсутствие приключения
+      return null;
     }
     return { adventure, userId };
   }

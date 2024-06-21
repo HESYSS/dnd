@@ -1,8 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Adventure } from '../../types';
+import './styles/AdventureList.css'
 
-const AdventureList = ({ userIsRegistered, adventures, userId }) => {
-  const arrayBufferToBase64 = (buffer) => {
+interface Props {
+  userIsRegistered: boolean;
+  adventures: {
+    isInAdventure: number[];
+    adventure: Adventure;
+  }[];
+  userId: number | null;
+}
+
+const AdventureList: React.FC<Props> = ({ userIsRegistered, adventures, userId }) => {
+  const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
     let binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -12,7 +23,7 @@ const AdventureList = ({ userIsRegistered, adventures, userId }) => {
     return window.btoa(binary);
   };
 
-  const handleDelete = async (adventureId) => {
+  const handleDelete = async (adventureId: number) => {
     try {
       await fetch(`http://localhost:3000/adventures/delete/${adventureId}`, { method: 'POST' });
       window.location.reload();
@@ -23,36 +34,38 @@ const AdventureList = ({ userIsRegistered, adventures, userId }) => {
 
   return (
     <div className="menu-container">
-      {userIsRegistered && adventures.map(adventure => (
-        (adventure.isInAdventure || adventure.adventure.gmId === userId) && (
-          <div className="adventure" key={adventure.adventure.id}>
+      {userIsRegistered && adventures.map(({ isInAdventure, adventure }) => {
+        const isAdventureIncluded = isInAdventure.includes(adventure.id) || adventure.gmId === userId || isInAdventure.includes(userId!);
+
+        return isAdventureIncluded && (
+          <div className="adventure" key={adventure.id}>
             <table>
               <tbody>
                 <tr>
-                  <th rowSpan="3">
-                    <Link to={`/adventure/${adventure.adventure.id}s${userId}`}>
-                      {adventure.adventure.image && (
+                  <th rowSpan={3}>
+                    <Link to={`/adventure/${adventure.id}s${userId}`}>
+                      {adventure.image && (
                         <img
                           className="advench"
-                          src={`data:image/jpeg;base64,${arrayBufferToBase64(adventure.adventure.image.data)}`}
+                          src={`data:image/jpeg;base64,${arrayBufferToBase64(adventure.image.data)}`}
                           alt="Adventure Picture"
                         />
                       )}
                     </Link>
                   </th>
-                  <th colSpan="3">
-                    <Link to={`/adventure/${adventure.adventure.id}s${userId}`}>
-                      {adventure.adventure.name}
+                  <th colSpan={3}>
+                    <Link to={`/adventure/${adventure.id}s${userId}`}>
+                      {adventure.name}
                     </Link>
                   </th>
                 </tr>
                 <tr>
-                  <th rowSpan="2">{adventure.adventure.description}</th>
+                  <th rowSpan={2}>{adventure.description}</th>
                   <td>x</td>
                 </tr>
                 <tr>
                   <th>
-                    <button onClick={() => handleDelete(adventure.adventure.id)}>
+                    <button onClick={() => handleDelete(adventure.id)}>
                       Delete Adventure
                     </button>
                   </th>
@@ -60,8 +73,8 @@ const AdventureList = ({ userIsRegistered, adventures, userId }) => {
               </tbody>
             </table>
           </div>
-        )
-      ))}
+        );
+      })}
     </div>
   );
 };

@@ -7,7 +7,7 @@ describe('App styling', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000'); // Замените на ваш URL
+    await page.goto('http://localhost:3000'); 
   });
 
   afterAll(async () => {
@@ -20,8 +20,8 @@ describe('App styling', () => {
       return window.getComputedStyle(heading).getPropertyValue('color');
     });
 
-    expect(headingStyle).toEqual('rgb(0, 0, 0)'); // Проверьте, что цвет заголовка соответствует ожидаемому
+    expect(headingStyle).toEqual('rgb(0, 0, 0)'); 
   });
 
-  // Добавьте другие тесты для проверки других стилей на странице
+
 });

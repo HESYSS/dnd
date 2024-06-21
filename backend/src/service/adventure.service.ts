@@ -32,9 +32,9 @@ export class AdventureService {
         image: fileData['adventureImage'],
         customMonsters: fileData['customMonsters'],
         battlefieldMaps: fileData['battlefieldMaps'],
-        gmId: parseInt(GmId.toString()), // Преобразуем GmId в число
-        players: { // Добавляем пользователей в приключение
-          connect: playerIds.map(id => ({ id: Number(id)  })) // Связываем пользователей по их идентификаторам
+        gmId: parseInt(GmId.toString()), 
+        players: { 
+          connect: playerIds.map(id => ({ id: Number(id)  })) 
         }
       },
     });
@@ -52,7 +52,7 @@ export class AdventureService {
   async findAll(): Promise<Adventure[]> {
     return this.prisma.adventure.findMany({
       include: {
-        players: true, // Включение отношения players
+        players: true, 
       },
     });
   }
@@ -68,7 +68,7 @@ export class AdventureService {
         id,
       },
       include: {
-        players: true, // Включение отношения players
+        players: true, 
       },
     });
   }

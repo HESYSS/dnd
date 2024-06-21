@@ -28,7 +28,6 @@ export class AdventureController {
   
 
   @Get(':id')
-  //@Render('adventure')
   async getAdventure(@Param('id', ParseIntPipe) id: number) {
     const adventure = await this.adventureService.findOne(id);
     return { adventure };

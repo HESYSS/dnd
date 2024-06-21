@@ -8,7 +8,6 @@ export class FriendRequestService {
 
   async sendFriendRequest(createFriendRequestDto: CreateFriendRequestDto) {
     const { receiverId, senderId } = createFriendRequestDto;
-    // Проверяем, существует ли уже активный запрос на дружбу между этими пользователями
     const existingRequest = await this.prisma.friendRequest.findFirst({
       where: {
         senderId: parseInt(senderId.toString()),
@@ -18,11 +17,9 @@ export class FriendRequestService {
     });
 
     if (existingRequest) {
-      // Если уже существует активный запрос, выбросить ошибку или обработать это каким-то другим способом
       throw new Error('Friend request between these users already exists.');
     }
 
-    // Создаем новый запрос на дружбу
     return this.prisma.friendRequest.create({
       data: {
         senderId : parseInt(senderId.toString()),

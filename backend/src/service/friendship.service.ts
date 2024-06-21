@@ -47,7 +47,6 @@ export class FriendshipService {
   }
 
   async addFriend(userId: number, friendId: number) {
-    // Предположим, что у вас есть модель Friend с соответствующими полями в вашей схеме Prisma
     return this.prisma.friendship.create({
       data: {
         userId,

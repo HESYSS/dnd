@@ -9,13 +9,13 @@ export class FriendshipController {
 
   @Post('add')
   async addFriend(@Body() createFriendshipDto: CreateFriendshipDto, @Req() req) {
-    const userId = req.user.id; // Предполагается, что `user` будет добавлен в запрос после аутентификации
+    const userId = req.user.id; 
     return this.friendshipService.addFriend(userId, createFriendshipDto.friendId);
   }
 
   @Get('friends')
   async getFriends(@Req() req) {
-    const userId = req.user.id; // Предполагается, что `user` будет добавлен в запрос после аутентификации
+    const userId = req.user.id; 
     return this.friendshipService.getFriends(userId);
   }
 

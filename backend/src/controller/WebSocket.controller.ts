@@ -1,6 +1,6 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { WebSocketMiddleware } from '../logger.middleware';
+import { WebSocketMiddleware } from '../middlewares/logger.middleware';
 
 @WebSocketGateway({
   cors: {

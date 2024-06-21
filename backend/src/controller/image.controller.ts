@@ -14,7 +14,6 @@ export class ImageController {
   ) {
     try {
       const images = await this.adventureService.getImagesByAdventureIdAndTableName(adventureId, tableName);
-      // Отправить изображения в ответ
       res.send(images);
     } catch (error) {
       console.error('Error retrieving images:', error);

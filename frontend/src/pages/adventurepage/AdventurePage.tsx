@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import LoadingSpinner from '../LoadingSpinner';
+import { useDispatch } from 'react-redux';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import BattlefieldModal from './BattlefieldModal';
-import './AdventurePage.css';
-import { openModal } from '../openmodal';
+import './styles/AdventurePage.css';
+import { openModal } from '../../slices/modalSlice';
+import { AppDispatch } from '../../store/store'; 
 
+interface BattlefieldMap {
+  data: ArrayBuffer;
+}
 
-const AdventurePage = () => {
-  const { id } = useParams();
-  const [adventure, setAdventure] = useState(null);
+interface Adventure {
+  adventure: {
+    battlefieldMaps: BattlefieldMap[];
+  };
+}
+
+const AdventurePage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [adventure, setAdventure] = useState<Adventure | null>(null);
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [selectedBattlefield, setSelectedBattlefield] = useState(null);
+  const [selectedBattlefield, setSelectedBattlefield] = useState<BattlefieldMap | null>(null);
   const [showGrid, setShowGrid] = useState(true);
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     const fetchAdventure = async () => {
       try {
         const response = await fetch(`http://localhost:3000/adventures/${id}`);
-        const data = await response.json();
+        const data: Adventure = await response.json();
         setAdventure(data);
         if (data.adventure.battlefieldMaps && data.adventure.battlefieldMaps.length > 0) {
           setSelectedBattlefield(data.adventure.battlefieldMaps[0]);
@@ -30,7 +42,7 @@ const AdventurePage = () => {
     fetchAdventure();
   }, [id]);
 
-  const arrayBufferToBase64 = (buffer) => {
+  const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
     let binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
@@ -40,13 +52,17 @@ const AdventurePage = () => {
     return window.btoa(binary);
   };
 
-  const handleBattlefieldChange = (selectedMap) => {
+  const handleBattlefieldChange = (selectedMap: BattlefieldMap) => {
     setSelectedBattlefield(selectedMap);
   };
 
   const chooseBattleMap = () => {
-    openModal('battlefieldModal');
+    handleOpenModal('battlefieldModal');
     setSidebarVisible(!sidebarVisible);
+  };
+
+  const handleOpenModal = (modalId: string) => {
+    dispatch(openModal(modalId));
   };
 
   const toggleSidebar = () => {
@@ -66,20 +82,18 @@ const AdventurePage = () => {
         <div className="sidebar open">
           <button className="close" onClick={toggleSidebar}>x</button>
           <div>
-            <button  onClick={chooseBattleMap}>
+            <button onClick={chooseBattleMap}>
               Выбрать поле боя
             </button>
             <button onClick={toggleGridVisibility}>
               {showGrid ? 'Скрыть сетку' : 'Показать сетку'}
             </button>
           </div>
-          
         </div>
       )}
       
       {adventure ? (
         <div className="image-container" id="image-container">
-          
           {selectedBattlefield && (
             <img
               src={`data:image/jpeg;base64,${arrayBufferToBase64(selectedBattlefield.data)}`}
@@ -92,10 +106,10 @@ const AdventurePage = () => {
       ) : (
         <LoadingSpinner />
       )}
+      
       <BattlefieldModal
         battlefieldMaps={adventure?.adventure?.battlefieldMaps || []}
         handleBattlefieldChange={handleBattlefieldChange}
-        selectedBattlefield={selectedBattlefield}
         arrayBufferToBase64={arrayBufferToBase64}
       />
       <div id="elementsContainer"></div>

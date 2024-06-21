@@ -1,8 +1,7 @@
-// LoadingSpinner.js
 import React from 'react';
-import './LoadingSpinner.css'; // Импортируем стили для анимации
+import './styles/LoadingSpinner.css'; 
 
-const LoadingSpinner = () => {
+const LoadingSpinner: React.FC = () => {
   return (
     <div className="loading-spinner">
       <div className="spinner"></div>
